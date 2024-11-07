@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,memo } from 'react'
 import { useRecoilValue,useSetRecoilState } from 'recoil';
 import { counter } from './store/atoms/counter';
 import "./app.css";
@@ -20,7 +20,16 @@ function CurrentCount1(){
 
   return<>
   <h6>{count}</h6>
+  {/* <DummyComponent /> */}
+  <MemoizedDummyComponent count={"Hello"}/>
   </>
+}
+
+const MemoizedDummyComponent=memo(DummyComponent);
+
+function DummyComponent (){
+  console.log('Dummy Component');
+  return <p>Dummy Component</p>
 }
 
 function IncreaseCount1(){

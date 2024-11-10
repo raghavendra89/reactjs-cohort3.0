@@ -1,18 +1,20 @@
 import { useRef,useState } from 'react';
 import { nanoid } from 'nanoid';
 import {Button} from '../Reusables/imports-reusables';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { deleteCartItemSelectorFamily } from '../store/atoms/cartItems-Atom';
 
-export default function CartItem({price='369',title=''}){
+export default function CartItem({id,price='369',title=''}){
 const idRef=useRef(nanoid());
 const [isInStock,setIsInStock]=useState(true);
 const [itemQuantity,setItemQuantity]=useState(1);
-const [isCartShow,setIsCartShow]=useState(true);
+const setDeleteCartItem=useSetRecoilState(deleteCartItemSelectorFamily(id));
 
 const quantityBtnClasses='bg-slate-300 rounded-md text-xl px-3 py-1';
 
     return(
-        isCartShow &&  
-        (<div id={`cart-item ${idRef.current}`} className='flex flex-wrap md:flex-nowrap justify-between gap-4 px-4'>
+
+        <div id={`cart-item ${idRef.current}`} className='flex flex-wrap md:flex-nowrap justify-between gap-4 px-4'>
         <div data-unique="cart-left-part" className='flex flex-wrap md:flex-nowrap space-x-2'>
             <div data-unique="cart-item-image" className="bg-slate-300" style={{"height":"90px",width:"90px"}}>
             </div>
@@ -31,7 +33,7 @@ const quantityBtnClasses='bg-slate-300 rounded-md text-xl px-3 py-1';
                     <Button className={`${quantityBtnClasses}`} onClick={decreaseQuantity}>-</Button>
                     <Button className='bg-transparent 
                     text-blue-500 font-semibold hover:text-blue-700 duration-200'
-                    onClick={deleteCartItem}
+                    onClick={()=>setDeleteCartItem()}
                     >Delete
                     </Button>
                 </div>
@@ -40,7 +42,7 @@ const quantityBtnClasses='bg-slate-300 rounded-md text-xl px-3 py-1';
         <span data-unique="cart-item-price" className=''>Rs. {price}</span>
 
     </div>
-    )
+    
     )
 
     
@@ -51,7 +53,5 @@ function increaseQuantity(){
 function decreaseQuantity(){
     setItemQuantity(q=>q-1);
 }
-function deleteCartItem(){
-    setIsCartShow(c=>!c);
-}
+
 }

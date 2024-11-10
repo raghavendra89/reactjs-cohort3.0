@@ -4,7 +4,7 @@ import {AmazonCheckout} from "./Pages/imports-pages";
 import { RecoilRoot } from 'recoil';
 
 function App() {
-
+console.log('App Component')
   return (
     <RecoilRoot>
       <AmazonCheckout />

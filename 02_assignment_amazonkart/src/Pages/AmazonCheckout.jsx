@@ -1,4 +1,4 @@
-import { useEffect, useRef,useState,useMemo } from "react";
+import { useRef,useMemo } from "react";
 import { Header,Footer, Container, CartItem } from "../Components/imports-components";
 import { nanoid } from "nanoid";
 import { useRecoilValue } from "recoil";
@@ -13,6 +13,9 @@ export default function AmazonCheckout(){
 
     const totalItems=useMemo(()=>cartItemsArray.reduce((acc,item)=>acc+parseInt(item.quantity),0),[cartItemsArray])
 
+
+    console.log('Amazon Checkout Component');
+
     return(<>
             <Header/>
             <Container className="py-4 bg-slate-200 !max-w-full">
@@ -22,9 +25,6 @@ export default function AmazonCheckout(){
                         <div data-unique="items" className="space-y-4">
                             {
                                 cartItemsArray.map(item=><CartItem key={item.id} id={item.id}
-                                 title={item.title} 
-                                 price={item.price}
-                                 isInStock={item.isInStock}
                                  />)
                             }
                         </div>

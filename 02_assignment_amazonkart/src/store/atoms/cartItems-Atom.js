@@ -43,13 +43,21 @@ export const itemQuantitySelectorFamily = selectorFamily({
     key: "itemQuantitySelectorFamily",
     get: (id) => ({ get }) => {
         const item = get(cartItemsSelectorFamily(id));
-        return item.quantity || 0;
+        return item?.quantity || 0;
     },
     set: (id) => ({ get, set }, newQuantity) => {
-        const item = get(cartItemsSelectorFamily(id));
-        // Ensure immutability by creating a new object
-        const updatedItem = { ...item, quantity: newQuantity };
-        set(cartItemsSelectorFamily(id), updatedItem);
+        const isInStock=get(isInStockSelectorFamily(id));
+        if(!isInStock){
+            alert('Item is Out Of Stock');
+            return;
+        }
+
+        if(newQuantity>=0){
+            const item = get(cartItemsSelectorFamily(id));
+            // Ensure immutability by creating a new object
+            const updatedItem = { ...item, quantity: newQuantity };
+            set(cartItemsSelectorFamily(id), updatedItem);
+        }
     }
 });
 
@@ -81,7 +89,7 @@ async function getItemsFromBackend() {
             title: "Testing",
             price: 2069,
             quantity: 2,
-            isInStock: true,
+            isInStock: false,
             img: ""
         }
     ]

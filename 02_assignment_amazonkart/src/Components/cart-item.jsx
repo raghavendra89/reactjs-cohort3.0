@@ -1,13 +1,16 @@
 import { useRef,useState } from 'react';
 import { nanoid } from 'nanoid';
 import {Button} from '../Reusables/imports-reusables';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { deleteCartItemSelectorFamily } from '../store/atoms/cartItems-Atom';
+import { useRecoilState, useSetRecoilState,useRecoilValue } from 'recoil';
+import { deleteCartItemSelectorFamily, isInStockSelectorFamily, itemQuantitySelectorFamily,cartItemsSelectorFamily } from '../store/atoms/cartItems-Atom';
 
-export default function CartItem({id,price='369',title=''}){
+export default function CartItem({id}){
+console.log('CartITem component');
+
 const idRef=useRef(nanoid());
-const [isInStock,setIsInStock]=useState(true);
-const [itemQuantity,setItemQuantity]=useState(1);
+const {title,price}=useRecoilValue(cartItemsSelectorFamily(id));
+const isInStock=useRecoilValue(isInStockSelectorFamily(id));
+const [itemQuantity,setItemQuantity]=useRecoilState(itemQuantitySelectorFamily(id));
 const setDeleteCartItem=useSetRecoilState(deleteCartItemSelectorFamily(id));
 
 const quantityBtnClasses='bg-slate-300 rounded-md text-xl px-3 py-1';

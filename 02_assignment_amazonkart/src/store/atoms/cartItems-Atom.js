@@ -1,4 +1,4 @@
-import { atom, selector, selectorFamily } from "recoil";
+import { atom, atomFamily, selector, selectorFamily } from "recoil";
 
 // Atom to store all todos as a dictionary
 export const cartItemsAtom = atom({
@@ -13,27 +13,32 @@ export const cartItemsAtom = atom({
                 return acc;
             }, {});
         }   
-    })
+    }),
+    effects: [
+        ({onSet}) => {
+            onSet(() => {
+                console.log('Cart Items Updated...')
+            })
+        },
+    ],
 });
 
-// SelectorFamily to retrieve a specific item by id
-export const cartItemsSelectorFamily = selectorFamily({
-    key: "cartItemsSelectorFamily",
-    get: (id) => ({ get }) => {
-        const items = get(cartItemsAtom);
-        return items[id] || { id: '', title: '', price: '', quantity: 0, isInStock: false, img: '' };
-    },
-    set: (id) => ({ set, get }, newValue) => {
-        const items = get(cartItemsAtom);
-        set(cartItemsAtom, { ...items, [id]: newValue });
-    }
-});
+export const cartItemAtomFamily = atomFamily({
+    key: "cartItemAtomFamily",
+    default: selectorFamily({
+        key: 'cartItemAtomDefault',
+        get: id => ({get}) => {
+            const items = get(cartItemsAtom);
+            return items[id] || { id: '', title: '', price: '', quantity: 0, isInStock: false, img: '' };
+        },
+    })
+})
 
 // SelectorFamily to retrieve the in-stock status of an item
 export const isInStockSelectorFamily = selectorFamily({
     key: "isInStockSelectorFamily",
     get: (id) => ({ get }) => {
-        const item = get(cartItemsSelectorFamily(id));
+        const item = get(cartItemAtomFamily(id));
         return item.isInStock || false;
     }
 });
@@ -42,7 +47,7 @@ export const isInStockSelectorFamily = selectorFamily({
 export const itemQuantitySelectorFamily = selectorFamily({
     key: "itemQuantitySelectorFamily",
     get: (id) => ({ get }) => {
-        const item = get(cartItemsSelectorFamily(id));
+        const item = get(cartItemAtomFamily(id));
         return item?.quantity || 0;
     },
     set: (id) => ({ get, set }, newQuantity) => {
@@ -53,10 +58,10 @@ export const itemQuantitySelectorFamily = selectorFamily({
         }
 
         if(newQuantity>=0){
-            const item = get(cartItemsSelectorFamily(id));
+            const item = get(cartItemAtomFamily(id));
             // Ensure immutability by creating a new object
             const updatedItem = { ...item, quantity: newQuantity };
-            set(cartItemsSelectorFamily(id), updatedItem);
+            set(cartItemAtomFamily(id), updatedItem);
         }
     }
 });

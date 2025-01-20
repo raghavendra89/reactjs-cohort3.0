@@ -2,14 +2,19 @@ import { useRef,useState } from 'react';
 import { nanoid } from 'nanoid';
 import {Button} from '../Reusables/imports-reusables';
 import { useRecoilState, useSetRecoilState,useRecoilValue } from 'recoil';
-import { deleteCartItemSelectorFamily, isInStockSelectorFamily, itemQuantitySelectorFamily,cartItemsSelectorFamily } from '../store/atoms/cartItems-Atom';
+import {
+    deleteCartItemSelectorFamily,
+    isInStockSelectorFamily,
+    itemQuantitySelectorFamily,
+    cartItemAtomFamily
+} from '../store/atoms/cartItems-Atom';
 
 export default function CartItem({id}){
 console.log('CartITem component');
 
 const idRef=useRef(nanoid());
-const {title,price}=useRecoilValue(cartItemsSelectorFamily(id));
-const isInStock=useRecoilValue(isInStockSelectorFamily(id));
+const item=useRecoilValue(cartItemAtomFamily(id));
+
 const [itemQuantity,setItemQuantity]=useRecoilState(itemQuantitySelectorFamily(id));
 const setDeleteCartItem=useSetRecoilState(deleteCartItemSelectorFamily(id));
 
@@ -24,11 +29,11 @@ const quantityBtnClasses='bg-slate-300 rounded-md text-xl px-3 py-1';
             <div data-unique="cart-item-details">
                 <span role="heading" data-unique="cart-item-heading" 
                 className='text-xl font-semibold block'>
-                    {title}
+                    {item.title}
                 </span>
                 <span data-unique="cart-item-status" 
-                className={`${isInStock?"text-green-500":"text-red-500"} block`}>
-                    {isInStock?"In Stock":"Out Of Stock"}
+                className={`${item.isInStock?"text-green-500":"text-red-500"} block`}>
+                    {item.isInStock?"In Stock":"Out Of Stock"}
                 </span>
                 <div data-unique="cart-item-incr-decr" className='space-x-2'>
                     <Button className={quantityBtnClasses} onClick={increaseQuantity}>+</Button>
@@ -42,7 +47,7 @@ const quantityBtnClasses='bg-slate-300 rounded-md text-xl px-3 py-1';
                 </div>
             </div>
         </div>
-        <span data-unique="cart-item-price" className=''>Rs. {price}</span>
+        <span data-unique="cart-item-price" className=''>Rs. {item.price}</span>
 
     </div>
     

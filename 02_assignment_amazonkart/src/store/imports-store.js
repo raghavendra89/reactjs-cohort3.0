@@ -1,1 +1,1 @@
-export {cartItemsAtom,cartItemsSelectorFamily} from "./atoms/cartItems-Atom"
+export {cartItemsAtom} from "./atoms/cartItems-Atom"
